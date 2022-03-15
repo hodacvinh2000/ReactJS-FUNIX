@@ -18,13 +18,42 @@ class Menu extends Component {
     renderDish(dish) {
         if (dish != null) {
             return (
-                <Card>
-                    <CardImg width="100%" src={dish.image} alt={dish.name} />
-                    <CardBody>
-                        <CardTitle>{dish.name}</CardTitle>
-                        <CardText>{dish.description}</CardText>
-                    </CardBody>
-                </Card>
+                <div className="col-12 col-md-5 m-1">
+                    <Card>
+                        <CardImg width="100%" src={dish.image} alt={dish.name} />
+                        <CardBody>
+                            <CardTitle>{dish.name}</CardTitle>
+                            <CardText>{dish.description}</CardText>
+                        </CardBody>
+                    </Card>
+                </div>
+            );
+        }
+        else {
+            return (
+                <div></div>
+            );
+        }
+    }
+
+    renderComment(dish) {
+        if (dish != null) {
+
+            const comment = dish.comments.map((comment) => {
+                let date = new Date(comment.date);
+                return (
+                    <div>
+                        <p>{comment.comment}</p>
+                        <p>-- {comment.author}, {date.toDateString()}</p>
+                    </div>
+                );
+            });
+
+            return (
+                <div className="col-12 col-md-5 m-1">
+                    <h3>Comment</h3>
+                    {comment}
+                </div>
             );
         }
         else {
@@ -56,6 +85,7 @@ class Menu extends Component {
                 </div>
                 <div className="row">
                     {this.renderDish(this.state.selectedDish)}
+                    {this.renderComment(this.state.selectedDish)}
                 </div>
             </div>
         );

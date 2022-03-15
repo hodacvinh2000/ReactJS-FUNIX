@@ -1,0 +1,70 @@
+import React, { Component } from "react";
+import { Card, CardImg, CardImgOverlay, CardText, CardBody, CardTitle } from 'reactstrap';
+import dateFormat from 'dateformat'; 
+
+class StaffList extends Component {
+    
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            selectedStaff: null
+        };
+    }
+
+    onStaffSelected(staff) {
+        this.setState({selectedStaff: staff});
+    }
+
+    renderStaff(staff) {
+        if (staff != null) {
+            console.log(staff);
+            return (
+                <div className="col-12 col-md-6 col-lg-4 staff">
+                    <Card>
+                        <CardBody>
+                            <CardText>Họ và tên: {staff.name}</CardText>
+                            <CardText>Ngày sinh: {dateFormat(staff.doB, "dd/mm/yyyy")}</CardText>
+                            <CardText>Ngày vào công ty: {dateFormat(staff.startDate, "dd/mm/yyyy")}</CardText>
+                            <CardText>Phòng ban: {staff.department.name}</CardText>
+                            <CardText>Số ngày nghỉ còn lại: {staff.annualLeave}</CardText>
+                            <CardText>Số ngày đã làm thêm: {staff.overTime}</CardText>
+                        </CardBody>
+                    </Card>
+                </div>
+            );
+        }
+        else {
+            return (
+                <div></div>
+            );
+        }
+    }
+
+    render() {
+
+        const staff = this.props.staffs.map((staff) => {
+            return (
+                <div key={staff.id} className="col-12 col-md-6 col-lg-4 staff">
+                    <Card onClick={() => this.onStaffSelected(staff)}>
+                        <CardTitle>{staff.name}</CardTitle>
+                    </Card>
+                </div>
+            );
+        });
+
+        return (
+            <div className="container-fluid">
+                <div className="row">
+                    {staff}
+                </div>
+                {this.state.selectedStaff == null && <p>Bấm vào tên nhân viên để xem thông tin.</p>}
+                <div className="row">
+                    {this.renderStaff(this.state.selectedStaff)}
+                </div>
+            </div>
+        );
+    } 
+}
+
+export default  StaffList;
