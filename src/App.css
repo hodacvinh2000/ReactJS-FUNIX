@@ -37,5 +37,18 @@
   }
 }
 .staff {
-  margin-top: 0.5%;
+  margin-top: 1%;
+}
+.staff-name {
+  font-size: larger;
+  font-weight: bold;
+}
+.card {
+  border: 2px solid gray;
+  border-radius: 10px;
+}
+.card-title {
+  margin-left: 5%;
+  font-size: 105%;
+  font-weight: 600;
 }
