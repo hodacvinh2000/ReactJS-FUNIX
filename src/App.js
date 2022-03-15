@@ -23,13 +23,13 @@ class App extends Component {
 
   onNumOfColumnSelected(num) {
     if (num == 2) {
-      this.setState({class: 'col-12 col-md-6 col-lg-6 staff'});
+      this.setState({staffListClass: 'col-12 col-md-6 col-lg-6 staff'});
     }
     else if (num == 3) {
-        this.setState({class: 'col-12 col-md-4 col-lg-4 staff'});
+        this.setState({staffListClass: 'col-12 col-md-4 col-lg-4 staff'});
     }
     else if (num == 6) {
-        this.setState({class: 'col-12 col-md-2 col-lg-2 staff'});
+        this.setState({staffListClass: 'col-12 col-md-2 col-lg-2 staff'});
     }
   }
 
@@ -50,7 +50,7 @@ class App extends Component {
               <option>
                 2
               </option>
-              <option>
+              <option selected>
                 3
               </option>
               <option>

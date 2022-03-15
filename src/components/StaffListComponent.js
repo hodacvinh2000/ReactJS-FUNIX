@@ -19,7 +19,7 @@ class StaffList extends Component {
     renderStaff(staff) {
         if (staff != null) {
             return (
-                <div className={this.props.StaffListClass}>
+                <div className='col-12 col-md-6 col-lg-6 staff'>
                     <Card  className="card-body">
                         <CardBody>
                             <CardText className="staff-name">Họ và tên: {staff.name}</CardText>
