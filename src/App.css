@@ -52,3 +52,9 @@
   font-size: 105%;
   font-weight: 600;
 }
+.numofcolumn {
+  width: 60px;
+}
+.navbar-form {
+  float: right;
+}
