@@ -1,12 +1,10 @@
 import React, { Component } from 'react';
-import { Navbar, NavbarBrand, Input, FormGroup, Label } from 'reactstrap';
-import Menu from './components/MenuComponent';
+import { Navbar, NavbarBrand, Input, FormGroup } from 'reactstrap';
 import StaffList from './components/StaffListComponent';
 import $ from 'jquery';
 import './App.css';
 import { DISHES } from './shared/dishes';
 import {STAFFS, DEPARTMENTS, ROLE} from './shared/staffs';
-import jquery from 'jquery';
 
 class App extends Component {
 
@@ -36,9 +34,9 @@ class App extends Component {
   render() {
     return (
       <div>
-        <Navbar dark color="primary">
+        <Navbar dark color="primary" className='navbar'>
           <div className="container">
-            <NavbarBrand href='/'>Ứng dụng quản lý nhân sự v1.0</NavbarBrand>
+            <NavbarBrand href='/' className='navbar-title'>Ứng dụng quản lý nhân sự v1.0</NavbarBrand>
             <FormGroup className='navbar-form'>
             <Input
               id="num-of-column"

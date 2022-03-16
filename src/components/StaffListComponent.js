@@ -57,7 +57,7 @@ class StaffList extends Component {
                 <div className="row">
                     {staff}
                 </div>
-                {this.state.selectedStaff == null && <p>Bấm vào tên nhân viên để xem thông tin.</p>}
+                {this.state.selectedStaff == null && <p className="more-info">Bấm vào tên nhân viên để xem thông tin.</p>}
                 <div className="row">
                     {this.renderStaff(this.state.selectedStaff)}
                 </div>
