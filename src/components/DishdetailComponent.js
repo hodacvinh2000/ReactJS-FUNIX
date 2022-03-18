@@ -1,14 +1,11 @@
-import React, { Component } from "react";
+import React from "react";
 import { Card, CardImg, CardImgOverlay, CardText, CardBody, CardTitle } from "reactstrap";
 import dateFormat from 'dateformat';
-import { DISHES} from '../shared/dishes';
 
-class Dishdetail extends Component {
-
-    renderDish(dish) {
+    function RenderDish({dish}) {
         return (
             <div className="col-12 col-md-5 m-1">   
-                <Card onClick={() => this.onDishSelect(dish)}>
+                <Card>
                     <CardImg width="100%" src={dish.image} alt={dish.name} />
                     <CardBody>
                         <CardTitle>{dish.name}</CardTitle>
@@ -19,7 +16,7 @@ class Dishdetail extends Component {
         );
     }
 
-    renderComment(comments) {
+    function RenderComments({comments}) {
 
         const comment = comments.map((comment) => {
             let date = new Date(comment.date);
@@ -39,16 +36,16 @@ class Dishdetail extends Component {
         );
     }
 
-    render() {
+    const Dishdetail = (props) => {
+        console.log(props.dish);
         return (
             <div className="container">
                 <div className="row">
-                    {this.renderDish(this.props.dish)}
-                    {this.renderComment(this.props.dish.comments)}
+                    <RenderDish dish={props.dish}/>
+                    <RenderComments comments={props.dish.comments} />
                 </div>
             </div>
         );
     }
-}
 
 export default Dishdetail;
