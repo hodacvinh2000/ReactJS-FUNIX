@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { Card, CardImg, CardImgOverlay, CardText, CardBody, CardTitle } from "reactstrap";
 import dateFormat from 'dateformat';
+import { DISHES} from '../shared/dishes';
 
 class Dishdetail extends Component {
 
@@ -40,9 +41,11 @@ class Dishdetail extends Component {
 
     render() {
         return (
-            <div className="row">
-                {this.renderDish(this.props.dish)}
-                {this.renderComment(this.props.dish.comments)}
+            <div className="container">
+                <div className="row">
+                    {this.renderDish(this.props.dish)}
+                    {this.renderComment(this.props.dish.comments)}
+                </div>
             </div>
         );
     }
