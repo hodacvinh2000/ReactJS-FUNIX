@@ -1,77 +1,23 @@
-.App {
-  text-align: center;
+.row-header{
+  margin:0px auto;
+  padding:0px auto;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.row-content {
+  margin:0px auto;
+  padding: 50px 0px 50px 0px;
+  border-bottom: 1px ridge;
+  min-height:400px;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+.footer{
+  background-color: #0dcaf0;
+  margin:0px auto;
+  padding: 20px 0px 20px 0px;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
-}
-
-.App-link {
-  color: #61dafb;
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-.staff {
-  margin-top: 1%;
-}
-.staff-name {
-  font-size: larger;
-  font-weight: bold;
-}
-.card {
-  border: 2px solid gray;
-  border-radius: 10px;
-}
-.card-title {
-  margin-left: 5%;
-  font-size: 105%;
-  font-weight: 600;
-}
-.numofcolumn {
-  width: 60px;
-}
-.navbar-form {
-  float: right;
-}
-.navbar {
-  padding-top: 20px
-}
-.navbar-title {
-  font-size: 140%;
-  font-weight: 700;
-}
-.more-info {
-  margin-top: 20px;
-  font-weight: 600;
-}
-
-@media only screen and (max-width:500px) {
-  #num-of-column {
-    display: none;
-  }
+address{
+  font-size:80%;
+  margin:0px;
+  color:#0f0f0f;
 }
