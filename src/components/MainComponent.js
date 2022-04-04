@@ -49,7 +49,7 @@ class Main extends Component {
         if (this.state.selectedDepartment != "all") {
           staffs = staffs.filter((staff) => staff.department.id === this.state.selectedDepartment);
           if (this.state.searchInput != "") {
-            staffs = staffs.filter((staff) => staff.search(this.state.searchInput) != -1);
+            staffs = staffs.filter((staff) => staff.name.search(this.state.searchInput) != -1);
           }
         }
         if (staffs.length > 0) {
@@ -78,7 +78,7 @@ class Main extends Component {
       <div className='App'>
           <Header />
           <Switch>
-            <Route exact path="/home" >
+            <Route exact path="/staff" >
               <div className="container-fluid pl-5 pr-5">
                 <div className="row mt-2">
                     <h2 className="col-4 col-md-4 col-lg-4">Nhân viên</h2>
@@ -97,9 +97,9 @@ class Main extends Component {
               </div>
             </Route>
             <Route path="/staff/:staffId" component={StaffWithId} />
-            <Route exact path="/departments" component={() => <DepartmentList departments={this.state.departments} />} />
+            <Route exact path="/department" component={() => <DepartmentList departments={this.state.departments} />} />
             <Route exact path="/payroll" component={() => <Payroll staffs={this.state.staffs.sort((a,b) => { return a.salaryScale - b.salaryScale })} onChange={(id) => this.onDepartmentChange(id)}/>} />
-            <Redirect to="/home" />
+            <Redirect to="/staff" />
           </Switch>
           <Footer />
       </div>
