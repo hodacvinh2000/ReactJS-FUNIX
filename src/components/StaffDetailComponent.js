@@ -12,9 +12,9 @@ const StaffDetail = (props) => {
                     <BreadcrumbItem active>{props.staff.name}</BreadcrumbItem>
                 </Breadcrumb>
             </div>
-            <Media className="row">
+            <Media className="row mb-2">
                 <Media left className='col-12 col-md-4 col-lg-3 m-1'>
-                    <Media object width="100%" src={props.staff.image} alt={props.staff.name} />
+                    <Media object width="100%" src={props.staff.image} alt={props.staff.name} className='boder border-secondary' />
                 </Media>
                 <Media body className="col-12 col-md-8 col-lg-9 m-1">
                     <Media heading>Họ và tên: {props.staff.name}</Media>

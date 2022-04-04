@@ -1,10 +1,11 @@
 import React from "react";  
-import { Breadcrumb, Card, CardBody, CardText, CardTitle } from "reactstrap";
+import { Breadcrumb, Card, CardBody, CardText, CardTitle, BreadcrumbItem } from "reactstrap";
+import { Link } from 'react-router-dom';
 
 function RenderPayroll({staff}) {
     return (
-        <Card>
-            <CardTitle>{staff.name}</CardTitle>
+        <Card className='border border-2 border-secondary'>
+            <CardTitle className='ml-3 mt-3'>{staff.name}</CardTitle>
             <CardBody>
                 <CardText>Mã nhân viên: {staff.id}</CardText>
                 <CardText>Hệ số lương: {staff.salaryScale}</CardText>
@@ -26,6 +27,12 @@ const Payroll = (props) => {
     return (
         <div className="container">
             <div className="row">
+                <Breadcrumb>
+                    <BreadcrumbItem><Link to="/home">Nhân viên</Link></BreadcrumbItem>
+                    <BreadcrumbItem active>Bảng lương</BreadcrumbItem>
+                </Breadcrumb>
+            </div>
+            <div className="row mb-2">
                 {payroll}
             </div>
         </div>

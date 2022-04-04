@@ -3,11 +3,9 @@ import { Card, CardBody, CardText, CardTitle } from "reactstrap";
 
 function RenderDepartment({department}) {
     return (
-        <Card className="mt-2">
-            <CardTitle>{department.name}</CardTitle>
-            <CardBody>
-                <CardText>Số lượng nhân viên: {department.numberOfStaff}</CardText>
-            </CardBody>
+        <Card className="mt-2 border border-secondary">
+            <CardTitle className='ml-2'>{department.name}</CardTitle>
+            <CardText className='ml-4 mb-2'>Số lượng nhân viên: {department.numberOfStaff}</CardText>
         </Card>
     );
 }
