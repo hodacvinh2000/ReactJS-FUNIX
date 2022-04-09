@@ -5,8 +5,10 @@ import 'font-awesome/css/font-awesome.min.css';
 import 'bootstrap-social/bootstrap-social.css';
 import './index.css';
 import App from './App';
+import { STAFFS } from './shared/staffs';
 import reportWebVitals from './reportWebVitals';
 
+localStorage.setItem('staffs',JSON.stringify(STAFFS));
 ReactDOM.render(
   <React.StrictMode>
     <App />
