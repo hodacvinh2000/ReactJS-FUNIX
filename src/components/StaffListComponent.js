@@ -31,7 +31,6 @@ class StaffList extends Component {
             isModalOpen: false,
             doB: '',
             startDate: '',
-            department: ''
         }
         this.handleSearch = this.handleSearch.bind(this);
         this.toggleModal = this.toggleModal.bind(this);
@@ -81,7 +80,11 @@ class StaffList extends Component {
             staffs.push(newStaff);
             localStorage.setItem('staffs',JSON.stringify(staffs));
             this.props.parentCallback(staffs);
-            console.log(newStaff);
+            this.setState({
+                doB: '',
+                startDate: ''
+            })
+            this.toggleModal();
         }
     }
 
