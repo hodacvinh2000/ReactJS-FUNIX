@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import { Card, CardImg, CardTitle } from 'reactstrap';
 import { Input, FormGroup, Form, Button, Col, Row, Modal, ModalHeader, ModalBody, Label, FormFeedback } from 'reactstrap';
+import { Field,Control, LocalForm, Errors } from 'react-redux-form';
 
 function RenderStaff({staff}) {
     return(
@@ -13,6 +14,12 @@ function RenderStaff({staff}) {
         </Card>
     );
 };
+const required = (val) => val && val.length;
+const maxLength = (len) => (val) => !(val) || (val.length <= len);
+const minLength =  (len) => (val) => {
+    if (val && val.length > 0) return val && (val.length >= len);
+    else return true;
+}
 
 class StaffList extends Component {
 
@@ -22,27 +29,14 @@ class StaffList extends Component {
         this.state = {
             searchInput: "",
             isModalOpen: false,
-            newStaff: {
-                name: '',
-                doB: '',
-                salaryScale: 1,
-                startDate: '',
-                department: null,
-                annualLeave: 0,
-                overTime: 0,
-                image: '/assets/images/alberto.png',
-            },
-            touched: {
-                name: false,
-                doB: false,
-                startDate: false
-            }
+            doB: '',
+            startDate: '',
+            department: ''
         }
         this.handleSearch = this.handleSearch.bind(this);
         this.toggleModal = this.toggleModal.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
-        this.handleInputChange = this.handleInputChange.bind(this);
-        this.handleBlur = this.handleBlur.bind(this);
+        this.onInputChange = this.onInputChange.bind(this);
     }
       
       onSearchInputChange(keyword) {
@@ -60,74 +54,35 @@ class StaffList extends Component {
           isModalOpen: !this.state.isModalOpen
         });
       }
-    
-    handleInputChange(event) { 
+
+      onInputChange(event) { 
         const value = event.target.value;
         const name = event.target.name;
-        let newStaff = this.state.newStaff;
-        newStaff[name] = value;
-        this.setState({newStaff:newStaff});
+        this.setState({[name]:value});
     }
     
-    handleSubmit(event) {
-        this.setState({
-            touched: {
-                name: true,
-                doB: true,
-                startDate: true
+    handleSubmit(values) {
+        if (values.doB != '' && values.startDate != '' && values.name) {
+            let newStaff = {
+                name: values.name,
+                doB: values.doB,
+                salaryScale: values.salaryScale,
+                startDate: values.startDate,
+                department: (values.department) ? this.props.departments.filter((department) => department.id === values.department)[0] : this.props.departments[0],
+                annualLeave: values.annualLeave,
+                overTime: values.overTime,
+                image: '/assets/images/alberto.png',
             }
-        })
-        if (this.state.newStaff.name != '' && this.state.newStaff.doB != '' && this.state.newStaff.startDate != '') {
-            const newStaff = this.state.newStaff;
             let staffs = JSON.parse(localStorage.getItem('staffs'));
             let maxId = staffs.map((staff)=>{return staff.id}).reduce(function(a,b){
                 return (a>b)?a:b;
             });
             newStaff['id'] = maxId + 1;
-            newStaff['department'] = this.props.departments.filter((department)=> department.id === newStaff.department)[0];
             staffs.push(newStaff);
-            this.setState({
-                newStaff: {
-                    name: '',
-                    doB: '',
-                    salaryScale: 1,
-                    startDate: '',
-                    department: '',
-                    annualLeave: 0,
-                    overTime: 0,
-                    image: '/assets/images/alberto.png',
-                }   
-            })
             localStorage.setItem('staffs',JSON.stringify(staffs));
             this.props.parentCallback(staffs);
+            console.log(newStaff);
         }
-        event.preventDefault();
-    }
-
-    handleBlur = (field) => (evt) => {
-        this.setState({
-            touched: { ...this.state.touched, [field]: true }
-        });
-    }
-
-    validate(name, doB, startDate) {
-        const errors = {
-            name: '',
-            doB: '',
-            startDate: ''
-        };
-
-        if (this.state.touched.name) {
-            if (name.length == 0) errors.name = 'Yêu cầu nhập';
-            else if (name.length < 2) errors.name = 'Yêu cầu ít nhất 2 ký tự';
-            else if (name.length > 30) errors.name = 'Yêu cầu nhiều nhất 30 ký tự';
-        }
-        if (this.state.touched.doB && doB.length == 0)
-            errors.doB = 'Yêu cầu nhập';
-        if (this.state.touched.startDate && startDate.length == 0)
-            errors.startDate = 'Yêu cầu nhập';
-
-        return errors;
     }
 
     render() {
@@ -143,8 +98,6 @@ class StaffList extends Component {
                 </div>
             );
         })
-
-        const errors = this.validate(this.state.newStaff.name,this.state.newStaff.doB,this.state.newStaff.startDate)
     
         return (
             <div className="container-fluid pl-5 pr-5">
@@ -166,84 +119,107 @@ class StaffList extends Component {
                     <Modal isOpen={this.state.isModalOpen} toggle={this.toggleModal}>
                         <ModalHeader toggle={this.toggleModal}>Thêm nhân viên</ModalHeader>
                         <ModalBody>
-                            <Form onSubmit={this.handleSubmit}>
-                            <FormGroup row>
-                                <Label htmlFor="name" md={4}>Tên</Label>
-                                <Col md={8}>
-                                    <Input type="text" id="name" name="name"
-                                        value={this.state.newStaff.name} 
-                                        invalid={errors.name !== ''}
-                                        onBlur={this.handleBlur('name')}
-                                        onChange={this.handleInputChange} />
-                                    <FormFeedback>{errors.name}</FormFeedback>
-                                </Col>
-                            </FormGroup>
-                            <FormGroup row>
-                                <Label htmlFor="doB" md={4}>Ngày sinh</Label>
-                                <Col md={8}>
-                                    <Input type="date" id="doB" name="doB"
-                                        value={this.state.newStaff.doB} 
-                                        invalid={errors.doB !== ''}
-                                        onBlur={this.handleBlur('doB')}
-                                        onChange={this.handleInputChange} />
-                                    <FormFeedback>{errors.doB}</FormFeedback>
-                                </Col>
-                            </FormGroup>
-                            <FormGroup row>
-                                <Label htmlFor="startDate" md={4}>Ngày vào công ty</Label>
-                                <Col md={8}>
-                                    <Input type="date" id="startDate" name="startDate"
-                                        value={this.state.newStaff.startDate}
-                                        invalid={errors.startDate !== ''}
-                                        onBlur={this.handleBlur('startDate')} 
-                                        onChange={this.handleInputChange} />
-                                    <FormFeedback>{errors.startDate}</FormFeedback>
-                                </Col>
-                            </FormGroup>
-                            <FormGroup row>
-                                <Label htmlFor="department" md={4}>Phòng ban</Label>
-                                <Col md={8}>
-                                    <Input type="select" id="department" name="department"
-                                        value={this.state.newStaff.department}
-                                        onChange={this.handleInputChange} >
-                                        {this.props.departments.map((department) => {
-                                            return(
-                                                <option value={department.id}>{department.name}</option>
-                                            );
-                                        })}
-                                    </Input>
-                                </Col>
-                            </FormGroup>
-                            <FormGroup row>
-                                <Label htmlFor="salaryScale" md={4}>Hệ số lương</Label>
-                                <Col md={8}>
-                                    <Input type="text" id="salaryScale" name="salaryScale"
-                                        value={this.state.newStaff.salaryScale} 
-                                        onChange={this.handleInputChange} />
-                                </Col>
-                            </FormGroup>
-                            <FormGroup row>
-                                <Label htmlFor="annualLeave" md={4}>Số ngày nghỉ còn lại</Label>
-                                <Col md={8}>
-                                    <Input type="text" id="annualLeave" name="annualLeave"
-                                        value={this.state.newStaff.annualLeave} 
-                                        onChange={this.handleInputChange} />
-                                </Col>
-                            </FormGroup>
-                            <FormGroup row>
-                                <Label htmlFor="overTime" md={4}>Số ngày đã làm thêm</Label>
-                                <Col md={8}>
-                                    <Input type="text" id="overTime" name="overTime"
-                                        value={this.state.newStaff.overTime} 
-                                        onChange={this.handleInputChange} />
-                                </Col>
-                            </FormGroup>
-                            <FormGroup row>
-                                <Col md={{size:10,offset:2}}>
-                                    <Button type="submit" color="primary">Send Feedback</Button>
-                                </Col>
-                            </FormGroup>
-                            </Form>
+                            <LocalForm onSubmit={(values)=>this.handleSubmit(values)}>
+                                <Row className="form-group">
+                                    <Label htmlFor="name" md={4}>Tên</Label>
+                                    <Col md={8}>
+                                        <Control.text model=".name" id="name" name="name"
+                                            className="form-control"
+                                            validators={{
+                                                required, minLength: minLength(2), maxLength: maxLength(30)
+                                            }} />
+                                        <Errors
+                                            className="text-danger"
+                                            model=".name"
+                                            show="touched"
+                                            messages={{
+                                                required: 'Yêu cầu nhập ',
+                                                minLength: 'Yêu cầu ít nhất 2 ký tự ',
+                                                maxLength: 'Yêu cầu nhiều nhất 30 ký tự '
+                                            }}
+                                        />
+                                    </Col>
+                                </Row>
+                                <Row className="form-group">
+                                    <Label htmlFor="doB" md={4}>Ngày sinh</Label>
+                                    <Col md={8}>
+                                        <Control type="date" model=".doB" id="doB" name="doB" className="form-control"
+                                            value={this.state.doB} 
+                                            onChange={this.onInputChange}
+                                            validators={{
+                                                required
+                                            }} />
+                                        <Errors
+                                            className="text-danger"
+                                            model=".doB"
+                                            show="touched"
+                                            messages={{
+                                                required: 'Yêu cầu nhập',
+                                            }}
+                                        />
+                                    </Col>
+                                </Row>
+                                <Row className="form-group">
+                                    <Label htmlFor="startDate" md={4}>Ngày vào công ty</Label>
+                                    <Col md={8}>
+                                        <Control type="date" model=".startDate" id="startDate" name="startDate" className="form-control"
+                                            value={this.state.startDate}
+                                            onChange={this.onInputChange}
+                                            validators={{
+                                                required
+                                            }} />
+                                        <Errors
+                                            className="text-danger"
+                                            model=".startDate"
+                                            show="touched"
+                                            messages={{
+                                                required: 'Yêu cầu nhập',
+                                            }}
+                                        />
+                                    </Col>
+                                </Row>
+                                <Row className="form-group">
+                                    <Label htmlFor="department" md={4}>Phòng ban</Label>
+                                    <Col md={8}>
+                                        <Control.select model=".department" id=""name="department" className='form-control' >
+                                            {this.props.departments.map((department) => {
+                                                return(
+                                                    <option value={department.id}>{department.name}</option>
+                                                );
+                                            })}
+                                        </Control.select>
+                                    </Col>
+                                </Row>
+                                <Row className="form-group">
+                                    <Label htmlFor="salaryScale" md={4}>Hệ số lương</Label>
+                                    <Col md={8}>
+                                        <Control.text model=".salaryScale" id="salaryScale" name="salaryScale" 
+                                        className="form-control"
+                                        defaultValue={1} />
+                                    </Col>
+                                </Row>
+                                <Row className="form-group">
+                                    <Label htmlFor="annualLeave" md={4}>Số ngày nghỉ còn lại</Label>
+                                    <Col md={8}>
+                                        <Control.text model=".annualLeave" id="annualLeave" name="annualLeave" 
+                                        className="form-control"
+                                        defaultValue={0} />
+                                    </Col>
+                                </Row>
+                                <Row className="form-group">
+                                    <Label htmlFor="overTime" md={4}>Số ngày đã làm thêm</Label>
+                                    <Col md={8}>
+                                        <Control.text model=".overTime" id="overTime" name="overTime" 
+                                        className="form-control"
+                                        defaultValue={0} />
+                                    </Col>
+                                </Row>
+                                <Row className="form-group">
+                                    <Col md={{size:10,offset:2}}>
+                                        <Button type="submit" color="primary">Send Feedback</Button>
+                                    </Col>
+                                </Row>
+                            </LocalForm>
                         </ModalBody>
                     </Modal>
                 </div>
