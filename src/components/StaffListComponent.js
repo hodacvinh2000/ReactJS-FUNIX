@@ -149,16 +149,16 @@ class StaffList extends Component {
         return (
             <div className="container-fluid pl-5 pr-5">
                 <div className="row mt-2">
-                    <h2 className="col-3 col-md-3 col-lg-3">Nhân viên</h2>
-                    <div className='col-3 col-md-3 col-lg-3'>
+                    <h2 className="col-10 col-md-4 col-lg-4">Nhân viên</h2>
+                    <div className='col-2 col-md-2 col-lg-2'>
                       <button className="btn btn-secondary" onClick={this.toggleModal}> <i className='fa fa-plus'></i> </button>
                     </div>
-                    <Form className="col-6 col-md-6 col-lg-6" onSubmit={this.handleSearch}>
+                    <Form className="col-12 col-md-6 col-lg-6" onSubmit={this.handleSearch}>
                       <Row className="form-group">
-                        <Col md={9}>
+                        <Col className="col-10">
                           <Input type="text" id="search" name="search" />
                         </Col>
-                        <Col md={3}>
+                        <Col className="col-2">
                           <Button type="submit" color="primary">Tìm</Button>
                         </Col>
                       </Row>
