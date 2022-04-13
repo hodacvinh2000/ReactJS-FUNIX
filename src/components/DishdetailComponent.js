@@ -8,7 +8,7 @@ import { Control, LocalForm, Errors } from "react-redux-form";
 
     function RenderDish({dish}) {
         return (
-            <Card>
+            <Card className="col-12 col-md-5 m-1">
                 <CardImg width="100%" src={dish.image} alt={dish.name} />
                 <CardBody>
                     <CardTitle>{dish.name}</CardTitle>
@@ -18,7 +18,7 @@ import { Control, LocalForm, Errors } from "react-redux-form";
         );
     }
 
-    function RenderComments({comments, onClick}) {
+    function RenderComments({comments, addComment, dishId}) {
 
         const comment = comments.map((comment) => {
             let date = new Date(comment.date);
@@ -30,21 +30,26 @@ import { Control, LocalForm, Errors } from "react-redux-form";
             );
         });
 
-        return (
-            <div>   
-                <h3>Comments</h3>
-                {comment}
-                <button className="form-control text-secondary col-5 col-md-5 col-lg-5" onClick={() => onClick()}>
-                    <i className="fa fa-pencil"></i> Submit Comment
-                </button>
-            </div>
-        );
+        if (comment != null) {
+            return (
+                <div className="col-12 col-md-5 m-1">   
+                    <h3>Comments</h3>
+                    {comment}
+                    <CommentForm dishId={dishId} addComment={addComment}/>
+                </div>
+            );
+        }
+        else {
+            return (
+                <div></div>
+            );
+        }
     }
 
     const maxLength = (len) => (val) => !(val) || (val.length <= len);
     const minLength = (len) => (val) => val && (val.length >= len);
 
-    class DishDetail extends Component {
+    class CommentForm extends Component {
 
         constructor(props) {
             super(props);
@@ -62,36 +67,17 @@ import { Control, LocalForm, Errors } from "react-redux-form";
             });
         }
     
-        handleSubmit(event) {
+        handleSubmit(values) {
             this.toggleModal();
-            alert("Rating: " + this.rating.value + " Yourname: " + this.yourname.value
-                + " Comment: " + this.comment.value);
-            event.preventDefault();
-    
+            this.props.addComment(this.props.dishId, values.rating, values.yourname, values.comment);
         }
 
         render() {
             return (
-                <div className="container">
-                    <div className="row">
-                        <Breadcrumb>
-                            <BreadcrumbItem><Link to="/home">Home</Link></BreadcrumbItem>
-                            <BreadcrumbItem><Link to="/menu">Menu</Link></BreadcrumbItem>
-                            <BreadcrumbItem active>{this.props.dish.name}</BreadcrumbItem>
-                        </Breadcrumb>
-                        <div className="col-12">
-                            <h3>{this.props.dish.name}</h3>
-                            <hr />
-                        </div>                
-                    </div>
-                    <div className="row">
-                        <div className="col-12 col-md-5 m-1">
-                            <RenderDish dish={this.props.dish} />
-                        </div>
-                        <div className="col-12 col-md-5 m-1">
-                            <RenderComments comments={this.props.comments} onClick={this.toggleModal}/>
-                        </div>
-                    </div>
+                <div>
+                    <button className="form-control text-secondary col-5 col-md-5 col-lg-5" onClick={this.toggleModal}>
+                        <i className="fa fa-pencil"></i> Submit Comment
+                    </button>
                     <Modal isOpen={this.state.isModalOpen} toggle={this.toggleModal}>
                         <ModalHeader toggle={this.toggleModal}>Submit Comment</ModalHeader>
                         <ModalBody>
@@ -99,9 +85,14 @@ import { Control, LocalForm, Errors } from "react-redux-form";
                                 <Row className="form-group">
                                     <Label htmlFor="rating" md={12}>Rating</Label>
                                     <Col md={12}>
-                                        <Control type="number" model=".rating" min={1} max={5} defaultValue={1} id="rating" name="rating"
-                                            innerRef={(input) => this.rating = input}
-                                            className="form-control" />
+                                        <Control.select model=".rating" id="rating" name="rating"
+                                            className="form-control" >
+                                            <option>1</option>
+                                            <option>2</option>
+                                            <option>3</option>
+                                            <option>4</option>
+                                            <option>5</option>
+                                        </Control.select>
                                     </Col>
                                 </Row>
                                 <Row className="form-group">
@@ -141,6 +132,30 @@ import { Control, LocalForm, Errors } from "react-redux-form";
                 </div>
             );
         }
+    }
+
+    const DishDetail = (props) => {
+        return (
+            <div className="container">
+                <div className="row">
+                    <Breadcrumb>
+                        <BreadcrumbItem><Link to="/home">Home</Link></BreadcrumbItem>
+                        <BreadcrumbItem><Link to="/menu">Menu</Link></BreadcrumbItem>
+                        <BreadcrumbItem active>{props.dish.name}</BreadcrumbItem>
+                    </Breadcrumb>
+                    <div className="col-12">
+                        <h3>{props.dish.name}</h3>
+                        <hr />
+                    </div>                
+                </div>
+                <div className="row">
+                    <RenderDish dish={props.dish} />
+                    <RenderComments comments={props.comments} 
+                        addComment={props.addComment}
+                        dishId={props.dish.id} />
+                </div>
+            </div>
+        );
     }
 
 export default DishDetail;
