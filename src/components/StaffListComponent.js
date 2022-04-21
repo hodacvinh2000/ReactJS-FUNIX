@@ -3,17 +3,76 @@ import { Link } from "react-router-dom";
 import { Card, CardImg, CardTitle } from 'reactstrap';
 import { Input, FormGroup, Form, Button, Col, Row, Modal, ModalHeader, ModalBody, Label, FormFeedback } from 'reactstrap';
 import { Field,Control, LocalForm, Errors } from 'react-redux-form';
+import { Loading } from "./LoadingComponent";
+import { Fade, Stagger, FadeTransform } from 'react-animation-components';
 
 function RenderStaff({staff}) {
     return(
         <Card className='text-center border border-secondary'>
-            <Link to={`/staff/${staff.id}`} >
+            <Link to={`/staffs/${staff.id}`} >
                 <CardImg width="100%" src={staff.image} alt={staff.name} />
             </Link>
             <CardTitle className='pb-0'>{staff.name}</CardTitle>
         </Card>
     );
 };
+
+function ListStaff ({staffs, isLoading, errMess, fetchStaffsOfDepartment}) {
+    if (isLoading) {
+        fetchStaffsOfDepartment;
+        return (
+            <Loading />
+        );
+    }
+    else if (errMess) {
+        return (
+            <div>
+                <h4>{errMess}</h4>
+            </div>
+        );
+    }
+    else {
+        if (staffs.length > 0) {
+            return staffs.map((staff) => {
+                return (
+                    <div key={staff.id} className="col-6 col-md-4 col-lg-2 mt-2 mb-2">
+                        <FadeTransform in
+                            transformProps={{
+                                exitTransform: 'scale(0.5) translateY(-50%)'
+                            }}>
+                            <RenderStaff staff={staff} />
+                        </FadeTransform>
+                    </div>
+                );
+            })
+        }
+        else {
+            return (
+                <div>
+                    <h4 className='col-12 col-md-12 col-lg-12'>Không tìm thấy kết quả!</h4>
+                </div>
+            );
+        }
+    }
+}
+
+function ListDepartment ({departments, isLoading, errMess}) {
+    if (isLoading || errMess) {
+        return (
+            <option>Loading ...</option>
+        );
+    }
+    else {
+        return (
+            departments.map((department) => {
+                return(
+                    <option value={department.id}>{department.name}</option>
+                );
+            })
+        );
+    }
+}
+
 const required = (val) => val && val.length;
 const maxLength = (len) => (val) => !(val) || (val.length <= len);
 const minLength =  (len) => (val) => {
@@ -61,31 +120,7 @@ class StaffList extends Component {
     }
     
     handleSubmit(values) {
-        if (values.doB != '' && values.startDate != '' && values.name) {
-            let newStaff = {
-                name: values.name,
-                doB: values.doB,
-                salaryScale: values.salaryScale,
-                startDate: values.startDate,
-                department: (values.department) ? this.props.departments.filter((department) => department.id === values.department)[0] : this.props.departments[0],
-                annualLeave: values.annualLeave,
-                overTime: values.overTime,
-                image: '/assets/images/alberto.png',
-            }
-            let staffs = JSON.parse(localStorage.getItem('staffs'));
-            let maxId = staffs.map((staff)=>{return staff.id}).reduce(function(a,b){
-                return (a>b)?a:b;
-            });
-            newStaff['id'] = maxId + 1;
-            staffs.push(newStaff);
-            localStorage.setItem('staffs',JSON.stringify(staffs));
-            this.props.parentCallback(staffs);
-            this.setState({
-                doB: '',
-                startDate: ''
-            })
-            this.toggleModal();
-        }
+        
     }
 
     render() {
@@ -94,13 +129,6 @@ class StaffList extends Component {
         if (this.state.searchInput != "") {
             staffs = staffs.filter((staff) => staff.name.toLowerCase().search(this.state.searchInput.toLowerCase()) != -1);
         }
-        const ListStaff = staffs.map((staff) => {
-            return (
-                <div key={staff.id} className="col-6 col-md-4 col-lg-2 mt-2 mb-2">
-                    <RenderStaff staff={staff} onClick={this.props.onClick} />
-                </div>
-            );
-        })
     
         return (
             <div className="container-fluid pl-5 pr-5">
@@ -185,11 +213,7 @@ class StaffList extends Component {
                                     <Label htmlFor="department" md={4}>Phòng ban</Label>
                                     <Col md={8}>
                                         <Control.select model=".department" id=""name="department" className='form-control' >
-                                            {this.props.departments.map((department) => {
-                                                return(
-                                                    <option value={department.id}>{department.name}</option>
-                                                );
-                                            })}
+                                            <ListDepartment departments={this.props.departments} isLoading={this.props.departmentsLoading} errMess={this.props.deparmentsErrMess} />
                                         </Control.select>
                                     </Col>
                                 </Row>
@@ -228,9 +252,7 @@ class StaffList extends Component {
                 </div>
                 <hr/>
                 <div className="row mb-2" style={{'text-align':'center'}}>
-                {staffs.length > 0 ? ListStaff :
-                    <h3 className='col-12 col-md-12 col-lg-12'>Không tìm thấy kết quả!</h3>
-                }
+                <ListStaff staffs={staffs} isLoading={this.props.staffsLoading} errMess={this.props.staffsErrMess} fetchStaffsOfDepartment={this.props.fetchStaffsOfDepartment} />
                 </div>
             </div>
         );

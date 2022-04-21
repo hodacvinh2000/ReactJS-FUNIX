@@ -1,26 +1,29 @@
 import React from "react";  
 import { Breadcrumb, Card, CardBody, CardText, CardTitle, BreadcrumbItem } from "reactstrap";
 import { Link } from 'react-router-dom';
+import { Fade, Stagger, FadeTransform } from 'react-animation-components';
 
-function RenderPayroll({staff}) {
+function RenderPayroll({staffsSalary}) {
     return (
-        <Card className='border border-2 border-secondary'>
-            <CardTitle className='ml-3 mt-3'>{staff.name}</CardTitle>
-            <CardBody>
-                <CardText>Mã nhân viên: {staff.id}</CardText>
-                <CardText>Hệ số lương: {staff.salaryScale}</CardText>
-                <CardText>Số giờ làm thêm: {staff.overTime}</CardText>
-                <Breadcrumb>Lương: {(staff.salaryScale*3000000 + staff.overTime*200000).toFixed(0)}</Breadcrumb>
-            </CardBody>
-        </Card>
+        <Fade in>
+            <Card className='border border-2 border-secondary'>
+                <CardTitle className='ml-3 mt-3'>{staffsSalary.name}</CardTitle>
+                <CardBody>
+                    <CardText>Mã nhân viên: {staffsSalary.id}</CardText>
+                    <CardText>Hệ số lương: {staffsSalary.salaryScale}</CardText>
+                    <CardText>Số giờ làm thêm: {staffsSalary.overTime}</CardText>
+                    <Breadcrumb>Lương: {(staffsSalary.salaryScale*3000000 + staffsSalary.overTime*200000).toFixed(0)}</Breadcrumb>
+                </CardBody>
+            </Card>
+        </Fade>
     );
 }
 
 const Payroll = (props) => {
-    const payroll = props.staffs.map((staff) => {
+    const payroll = props.staffsSalary.map((staffsSalary) => {
         return (
             <div className="col-12 col-md-6 col-lg-4 mt-2 mb-2">
-                <RenderPayroll staff={staff} />
+                <RenderPayroll staffsSalary={staffsSalary} />
             </div>
         );
     })
@@ -32,9 +35,11 @@ const Payroll = (props) => {
                     <BreadcrumbItem active>Bảng lương</BreadcrumbItem>
                 </Breadcrumb>
             </div>
-            <div className="row mb-2">
-                {payroll}
-            </div>
+            <Stagger in>
+                <div className="row mb-2">
+                        {payroll}
+                </div>
+            </Stagger>
         </div>
     );
 }
