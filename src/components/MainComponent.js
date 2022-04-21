@@ -6,10 +6,9 @@ import StaffDetail from './StaffDetailComponent';
 import DepartmentList from './DepartmentListComponent';
 import Payroll from './PayrollComponent';
 import { Switch, Route, Redirect, withRouter } from 'react-router-dom';
-import { fetchStaffs, fetchDepartments, fetchStaffsSalary } from '../redux/ActionCreator';
+import { fetchStaffs, fetchDepartments, fetchStaffsSalary, postStaff, updateStaff, deleteStaff } from '../redux/ActionCreator';
 import {connect} from 'react-redux';
 import StaffsOfDepartComponent from './StaffsOfDepartComponent';
-import { TransitionGroup, CSSTransition} from 'react-transition-group';
 
 const mapStateToProps = state => {
   return {
@@ -23,7 +22,10 @@ const mapStateToProps = state => {
 const mapDispatchToProps = (dispatch) => ({
   fetchStaffs: () => {dispatch(fetchStaffs())},
   fetchDepartments: () => {dispatch(fetchDepartments())},
-  fetchStaffsSalary: () => {dispatch(fetchStaffsSalary())}
+  fetchStaffsSalary: () => {dispatch(fetchStaffsSalary())},
+  postStaff: (name, doB, startDate, departmentId, salaryScale, annualLeave, overTime) => dispatch(postStaff(name, doB, startDate, departmentId, salaryScale, annualLeave, overTime)),
+  updateStaff: (id, name, doB, startDate, departmentId, salaryScale, annualLeave, overTime) => dispatch(updateStaff(id, name, doB, startDate, departmentId, salaryScale, annualLeave, overTime)),
+  deleteStaff: (id) => dispatch(deleteStaff(id)),
 });
 
 class Main extends Component {
@@ -37,14 +39,18 @@ class Main extends Component {
     render() {
 
       const StaffWithId = ({match}) => {
-        const staff = this.props.staffs.staffs.filter((staff) => staff.id === parseInt(match.params.staffId,10))[0];
+        const staff = this.props.staffs.staffs.find((staff) => staff.id === parseInt(match.params.staffId,10));
+        console.log(staff);
         return (
           <StaffDetail staff={staff}
-            department={this.props.departments.departments.filter((department) => department.id === staff.departmentId)[0]}
+            departments={this.props.departments.departments}
+            department={this.props.departments.departments.find((department) => department.id === staff.departmentId)}
             staffLoading={this.props.staffs.isLoading}
             staffErrMess={this.props.staffs.errMess}
             departmentLoading={this.props.departments.isLoading}
-            departmentErrMess={this.props.departments.errMess} />
+            departmentErrMess={this.props.departments.errMess}
+            updateStaff={this.props.updateStaff}
+            deleteStaff={this.props.deleteStaff} />
         );
       };
 
@@ -66,7 +72,8 @@ class Main extends Component {
                   staffsLoading={this.props.staffs.isLoading}
                   staffsErrMess={this.props.staffs.errMess}
                   departmentsLoading={this.props.departments.isLoading}
-                  departmentsErrMess={this.props.departments.errMess} />}>
+                  departmentsErrMess={this.props.departments.errMess}
+                  postStaff={this.props.postStaff} />}>
               </Route>
               <Route path="/staffs/:staffId" component={StaffWithId} />
               <Route path='/departments/:departmentId'>{StaffsOfDeparment}</Route>

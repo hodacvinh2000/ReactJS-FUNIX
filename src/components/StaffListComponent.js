@@ -120,7 +120,14 @@ class StaffList extends Component {
     }
     
     handleSubmit(values) {
-        
+        this.toggleModal();
+        let departmentId = this.props.departments[0].id;
+        if (values.department) departmentId = values.department;
+        this.props.postStaff(values.name, values.doB, values.startDate, departmentId, values.salaryScale, values.annualLeave, values.overTime);
+        this.setState({
+            doB: '',
+            startDate: ''
+        })
     }
 
     render() {
@@ -243,7 +250,7 @@ class StaffList extends Component {
                                 </Row>
                                 <Row className="form-group">
                                     <Col md={{size:10,offset:2}}>
-                                        <Button type="submit" color="primary">Send Feedback</Button>
+                                        <Button type="submit" color="primary">Thêm</Button>
                                     </Col>
                                 </Row>
                             </LocalForm>
